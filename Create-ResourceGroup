@@ -1,0 +1,28 @@
+function CreateResourceGroups {
+    param (
+        [Parameter(Mandatory = $True, Position = 1, ValueFromPipeline = $False)]
+        [string[]]$ResourceGroups,
+        [Parameter(Mandatory = $False, Position = 2, ValueFromPipeline = $False)]
+        [string]$Location = 'WestEurope'
+
+    )
+    
+    $ExistingResourceGroups = Get-AzResourceGroup
+
+    foreach ($ResourceGroup in $ResourceGroups){
+        if ($ExistingResourceGroups.ResourceGroupName -notcontains $ResourceGroup) {
+            Write-Host "ResourceGroup $($ResourceGroup) does not exist. Creating new ResourceGroup" -ForegroundColor Green
+
+            New-AzResourceGroup -Name $ResourceGroup -Location $Location
+        }
+        else {
+            Write-Host "ResourceGroup $($ResourceGroup) already Exists" -ForegroundColor Yellow
+        }
+
+        
+    }
+    
+}
+
+# Example
+# CreateResourceGroups -ResourceGroups Demo
